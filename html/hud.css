@@ -1,0 +1,150 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
+
+#player_uuid {
+    font-family: Poppins;
+    font-weight: 700;
+    font-size: 15px;
+    color: rgb(0, 100, 255);
+}
+
+#container {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+}
+
+.title {
+    font-family: Poppins;
+    font-weight: 700;
+    font-size: 50px;
+    color: rgb(0, 100, 255);
+    display: block;
+}
+
+.play_button {
+    font-family: Poppins;
+    font-size: 70px;
+    font-weight: 700;
+    color: white;
+    background-color: rgb(0, 100, 255);
+    box-shadow: 0 0 20px rgb(0, 100, 255);
+    border: none;
+    transition: box-shadow 0.2s;
+}
+
+.play_button:hover {
+    box-shadow: 0 0 35px rgb(0, 100, 255);
+}
+
+input {
+    padding: 20px;
+    font-family: Poppins;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+input:focus {
+    outline: none;
+}
+
+.nick_name {
+    display: none;
+}
+
+#players_title {
+    color: rgb(100, 0, 255);
+    font-size: 36px;
+}
+
+.lobby {
+    display: none;
+}
+
+
+.player_nick {
+    font-family: Poppins;
+    font-weight: 700;
+    font-size: 25px;
+    color: rgb(255, 0, 0);
+}
+
+.subtitle {
+    font-family: Poppins;
+    font-weight: 700;
+    font-size: 24px;
+    color: rgb(255, 0, 225);
+    display: block;
+    text-align: center;
+}
+
+.chat_box {
+    position: absolute;
+    top: 30px;
+    right: 25px;
+    margin-top: 3%;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 25px rgb(176, 176, 176);
+    text-align: center;
+    font-family: Poppins;
+    font-weight: 700;
+    font-size: 24px;
+    color: gray;
+    overflow: auto;
+}
+
+.chat_input {
+    padding: 4px 2px;
+    font-size: 10px;
+    border-radius: 0px;
+}
+
+.chat_utils {
+    margin-top: 10%;
+}
+
+.chat_send {
+    font-size: 16px;
+    margin-left: 10px;
+}
+
+.chat_logs {
+    height: 200px;
+    overflow-y: auto;
+    font-size: 12px;
+    text-align: left;
+}
+
+.chat_msg {
+    font-family: Poppins;
+    font-weight: 700;
+    font-size: 16px;
+    color: rgb(150, 0, 255)
+}
+
+.nick_verify {
+    color: red;
+    font-size: 16px;
+    display: none;
+}
+
+.lobby_uuid {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-family: Poppins;
+    font-weight: 700;
+    font-size: 25px;
+    color: rgb(0, 255, 0);
+}
+
+#play_squad:disabled {
+    background-color: gray;
+    box-shadow: 0 0 20px gray;
+}
+
+#play_squad:disabled:hover {
+    box-shadow: 0 0 0px transparent;
+}

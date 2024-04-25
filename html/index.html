@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link href="hud.css" rel="stylesheet">
+    </head>
+    <body>
+        <div id="start_screen">
+            <div id="player_uuid"></div>
+            <div id="container">
+                <div id="title" class="title">TheWordSearchGame</div>
+                <button id="play_button" class="play_button">PLAY</button>
+            </div>
+        </div>
+        <nickname id="nick_name" class="nick_name">
+            <div id="container">
+                <div class="title">TYPE IN YOUR NICKNAME</div>
+                <input  id="nickname_input" type="text" name="userInput" size="50" placeholder="nickname">
+                <button id="goLobby" style="margin: 20px" class="play_button">ENTER</button>
+                <div id="nick_verify" class="title nick_verify">That name is already taken.</div>
+            </div>
+        </nickname>
+        <findlobby id="find_lobby" class="title">FINDING LOBBY...</findlobby>
+        <lobby id="lobby" class="lobby">
+            <div id="player_nick" class="player_nick"></div>
+            <div id="lobby_uuid" class="lobby_uuid"></div>
+            <div id="chat_box" class="chat_box">CHAT
+                <div id="chat_logs" class="chat_logs"></div>
+                <div class="chat_utils">
+                    <input id="chat_input" class="chat_input" "placeholder="message">
+                    <button id="sendChat" class="play_button chat_send">SEND</button>
+                </div>
+            </div>
+            <div id="container">
+                <div class="title">TheWordSearchGame</div>
+                <button id="play_duo" style="margin: 20px" class="play_button">PLAY (2 PLAYERS)</button>
+                <button id="play_squad" style="margin: 20px" class="play_button">PLAY (2+ PLAYERS)</button>
+                <div>
+                    <div id="players_title" class="title">Players in Lobby</div>
+                    <div id="online_players" class="title subtitle"></div>
+                </div>
+            </div>
+        </lobby>
+    </body>
+    <script>
+
+//tbh we have to log buttons priced by players do so that we can send the data we want
+//so we have to send data in array because we cant send data in one go or it gets annoying
+
+var connection = null;
+var uuid = null;
+var nickName = null;
+var lobbyUUID = null;
+var selectedMode;
+var serverUrl;
+serverUrl = "ws://" + window.location.hostname + ":9880";
+// Create the connection with the server
+connection = new WebSocket(serverUrl);
+
+connection.onopen = function (evt) {
+    console.log("open");
+}
+
+//when user closes client(tab)
+connection.onclose = function (evt) {
+    console.log("close");
+}
+
+connection.onmessage = function (evt) {
+    var message = evt.data;
+    //honestly we should just use contain for everything so its easier
+    console.log(evt.data);
+    if (uuid == null) {
+        uuid = evt.data;
+        var uuidDiv = document.getElementById("player_uuid");
+        uuidDiv.innerHTML = "Player: " + uuid;
+    }
+
+    //handle players online
+    if (message.includes("PlayersOnline")) {
+        console.log("PlayersOnline:");
+        handlePlayersOnline(message);
+    }
+
+    //handle nickname
+    if (message.includes("Nickname:")) {
+        if (nickName == null) {
+            handleNickName(message);
+        }
+    }
+
+    //handle lobby
+    if (message.includes("Lobby:")) {
+        if (lobbyUUID == null) {
+            handleLobby(message);
+        }
+    }
+
+    //handle chat
+    if (message.includes("Chat:")) {
+        handleChat(message);
+    }
+}
+
+//screens
+var nicknameStyle = document.getElementById("nick_name");
+nicknameStyle.style.display = "none";
+var lobbyStyle = document.getElementById("lobby");
+lobbyStyle.style.display = "none";
+var findLobby = document.getElementById("find_lobby");
+findLobby.style.display = "none";
+
+var playButton = document.getElementById("play_button");
+var nicknameContainer = document.querySelector("nickname");
+
+playButton.addEventListener("click", function() {
+    var bodyScreen = document.getElementById("start_screen");
+    bodyScreen.style.display = "none";
+    
+    nicknameContainer.style.display = "block";
+});
+
+//buttons with functions
+var goLobbyButton = document.getElementById("goLobby");
+var lobbyContainer = document.querySelector("lobby");
+var chatSendButton = document.getElementById("sendChat")
+var nickVerify = document.getElementById("nick_verify");
+var playDuos = document.getElementById("play_duo");
+var playSquads = document.getElementById("play_squad");
+
+//WE HAVE TO ADD NICKNAME CHECK FOR "" blank username
+goLobbyButton.addEventListener("click", function() {
+    var nickNameInput = document.getElementById("nickname_input");
+    var nickInput = nickNameInput.value;
+    //make name of the array called "nickname", so we can designate whats doing what on the backend(java), well do this for everything
+    connection.send("nickname" + uuid + "," + nickInput);
+});
+
+chatSendButton.addEventListener("click", function() {
+    var chatInput = document.getElementById("chat_input");
+    chatInput = chatInput.value;
+    connection.send("chat" + lobbyUUID + "," + uuid + "," + chatInput);
+});
+
+playDuos.addEventListener("click", function() {
+    playDuos.style.backgroundColor = "black";
+    playDuos.style.boxShadow = "0 0 20px black";
+    playDuos.addEventListener("mouseover", function() {
+        playDuos.style.boxShadow = "0 0 35px black";
+    })
+
+    selectedMode = "duos";
+    playSquads.disabled = true;
+    connection.send("mode" + uuid + "," + lobbyUUID + "," +  "duos");
+});
+
+function handlePlayersOnline(message) {
+    var messageWithoutHeader = message.replace("PlayersOnline: ", "");
+    console.log(messageWithoutHeader);
+    var online_playersDiv = document.getElementById("online_players");
+    online_playersDiv.innerText = messageWithoutHeader;
+}
+
+function handleNickName(message) {
+    var messageWithoutHeader = message.replace("Nickname:", "");
+    var nickNameArray = messageWithoutHeader.split(",");
+    console.log(nickNameArray);
+    if (nickNameArray[0] == "true") {
+        var nickNameScreen = document.getElementById("nick_name");
+        nickNameScreen.style.display = "none";
+        findLobby.style.display = "block";
+        nickName = nickNameArray[1];
+        
+        //entering lobby
+        console.log("finding lobby...");
+        connection.send("lobby" + uuid);
+    } else {
+        nickVerify.style.display = "block";
+    }
+}
+
+function handleLobby(message) {
+    var messageWithoutHeader = message.replace("Lobby:", "");
+    console.log(messageWithoutHeader)
+    lobbyUUID = messageWithoutHeader;
+    findLobby.style.display = "none";
+
+    var lobbyUUIDDiv = document.getElementById("lobby_uuid");
+    lobbyUUIDDiv.innerHTML = "Lobby: " + lobbyUUID;
+    lobbyContainer.style.display = "block";
+    var nickDiv = document.getElementById("player_nick");
+    nickDiv.innerHTML = nickName;
+}
+
+function handleChat(message) {
+    var messageWithoutHeader = message.replace("Chat:", "");
+    var chatArray = messageWithoutHeader.split(",");
+    console.log(chatArray);
+
+    if (chatArray[0] == lobbyUUID) {
+        var chatLogPanel = document.getElementById("chat_logs");
+        var chatLogs = document.createElement("div");
+        chatLogs.classList.add("chat_msg");
+        chatLogs.textContent = chatArray[1];
+        chatLogPanel.appendChild(chatLogs);
+    }
+}
+
+//use connection.send to send data back to websocket
+//use broadcast to send stuff from app.java to javascript
+    </script>
+</html>
