@@ -115,7 +115,6 @@ public class App extends WebSocketServer {
             }
             Lobby lobby = gameServer.getLobbyByUUID(modeArray[1]);
             lobby.checkGameModeFull();
-            
         }
     }
 
