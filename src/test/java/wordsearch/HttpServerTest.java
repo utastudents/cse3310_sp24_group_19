@@ -9,7 +9,7 @@ public class HttpServerTest {
         int portNum = 8080;
         String dirName = "./html";
 
-        HttpServer httpServer = new HttpServer(portNum, dirName);
+        HttpServerTest httpServer = new HttpServerTest(portNum, dirName);
 
         httpServer.start();
     }
