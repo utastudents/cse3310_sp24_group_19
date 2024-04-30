@@ -108,6 +108,7 @@ input:focus {
 .chat_send {
     font-size: 16px;
     margin-left: 10px;
+    box-shadow: none;
 }
 
 .chat_logs {
@@ -147,4 +148,32 @@ input:focus {
 
 #play_squad:disabled:hover {
     box-shadow: 0 0 0px transparent;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    border: 2px solid #c7c7c7;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+}
+
+td:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.gamehud {
+    display: none;
+}
+
+.word_grid {
+    font-family: Poppins;
+    font-weight: bold;
+}
+
+#word_bank {
+    margin-top: 15px;
 }
