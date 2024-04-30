@@ -32,7 +32,7 @@ public class PlayerTest {
     public void testGetPlayerGameMode() {
         assertNull(player.getPlayerGameMode());
 
-        player.setGameMode(GameMode.DUOS);
-        assertEquals(GameMode.DUOS, player.getPlayerGameMode());
+        player.setGameMode(GameModeTest.DUOS);
+        assertEquals(GameModeTest.DUOS, player.getPlayerGameMode());
     }
 }
