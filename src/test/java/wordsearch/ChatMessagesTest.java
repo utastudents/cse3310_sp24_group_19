@@ -10,7 +10,7 @@ public class ChatMessagesTest {
         String playerUUID = "5678";
         String message = "Hello John";
         
-        ChatMessages chatMessage = new ChatMessages(lobbyUUID, playerUUID, message);
+        ChatMessagesTest chatMessage = new ChatMessagesTest(lobbyUUID, playerUUID, message);
         
         assertEquals(lobbyUUID, chatMessage.getLobbyUUID());
         assertEquals(playerUUID, chatMessage.getPlayerUUID());
