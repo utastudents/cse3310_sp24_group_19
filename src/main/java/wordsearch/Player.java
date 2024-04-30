@@ -8,7 +8,7 @@ public class Player {
     private String nick;
     private WebSocket connection;
     private int score;
-    private String color;
+    private PlayerColors.Color color;
     private GameMode gameMode;
 
     public Player(String uuid, WebSocket connection) {
@@ -34,5 +34,13 @@ public class Player {
 
     public void setGameMode(GameMode gameMode) {
         this.gameMode = gameMode;
+    }
+
+    public PlayerColors.Color getColor() {
+        return color;
+    }
+
+    public void setPlayerColor(PlayerColors.Color playerColor) {
+        this.color = playerColor;
     }
 }
