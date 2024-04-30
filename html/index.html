@@ -41,6 +41,13 @@
                 </div>
             </div>
         </lobby>
+        <gamehud id="gamehud" class="gamehud" style="display: none;"">
+            <div id="game_players" class="player_nick"></div>
+            <div id="container">
+                <div id="word_grid" class="word_grid"></div>
+                <div id="word_bank" class="word_grid"></div>
+            </div>
+        </gamehud>
     </body>
     <script>
 
@@ -51,7 +58,10 @@ var connection = null;
 var uuid = null;
 var nickName = null;
 var lobbyUUID = null;
-var selectedMode;
+var gameUUID = null;
+var selectedMode = "";
+var color = "";
+var wordLocations;
 var serverUrl;
 serverUrl = "ws://" + window.location.hostname + ":9119";
 // Create the connection with the server
@@ -100,6 +110,31 @@ connection.onmessage = function (evt) {
     if (message.includes("Chat:")) {
         handleChat(message);
     }
+
+    //handle game
+    if (message.includes("Game:")) {
+        handleGame(message);
+    }
+
+    //handle grid
+    if (message.includes("Grid:")) {
+        handleGrid(message);
+    }
+
+    //handle location
+    if (message.includes("Locations:")) {
+        handleLocations(message);
+    }
+
+    //handle game players
+    if (message.includes("GamePlayers:")) {
+        handleGamePlayers(message);
+    }
+
+    //handle wordbank
+    if (message.includes("WordBank:")) {
+        handleWordBank(message);
+    }
 }
 
 //screens
@@ -123,6 +158,7 @@ playButton.addEventListener("click", function() {
 //buttons with functions
 var goLobbyButton = document.getElementById("goLobby");
 var lobbyContainer = document.querySelector("lobby");
+var gameHud = document.querySelector("gamehud");
 var chatSendButton = document.getElementById("sendChat")
 var nickVerify = document.getElementById("nick_verify");
 var playDuos = document.getElementById("play_duo");
@@ -165,31 +201,36 @@ function handleNickName(message) {
     var messageWithoutHeader = message.replace("Nickname:", "");
     var nickNameArray = messageWithoutHeader.split(",");
     console.log(nickNameArray);
-    if (nickNameArray[0] == "true") {
+    if (nickNameArray[0] == uuid) {
+        if (nickNameArray[1] == "true") {
         var nickNameScreen = document.getElementById("nick_name");
         nickNameScreen.style.display = "none";
         findLobby.style.display = "block";
-        nickName = nickNameArray[1];
+        nickName = nickNameArray[2];
         
         //entering lobby
         console.log("finding lobby...");
         connection.send("lobby" + uuid);
-    } else {
-        nickVerify.style.display = "block";
+        } else {
+            nickVerify.style.display = "block";
+        }
     }
 }
 
 function handleLobby(message) {
     var messageWithoutHeader = message.replace("Lobby:", "");
-    console.log(messageWithoutHeader)
-    lobbyUUID = messageWithoutHeader;
-    findLobby.style.display = "none";
+    var lobbyArray = messageWithoutHeader.split(",");
+    if (lobbyArray[1] == uuid) {
+        console.log(lobbyArray[0])
+        lobbyUUID = lobbyArray[0];
+        findLobby.style.display = "none";
 
-    var lobbyUUIDDiv = document.getElementById("lobby_uuid");
-    lobbyUUIDDiv.innerHTML = "Lobby: " + lobbyUUID;
-    lobbyContainer.style.display = "block";
-    var nickDiv = document.getElementById("player_nick");
-    nickDiv.innerHTML = nickName;
+        var lobbyUUIDDiv = document.getElementById("lobby_uuid");
+        lobbyUUIDDiv.innerHTML = "Lobby: " + lobbyUUID;
+        lobbyContainer.style.display = "block";
+        var nickDiv = document.getElementById("player_nick");
+        nickDiv.innerHTML = nickName;
+    }
 }
 
 function handleChat(message) {
@@ -206,7 +247,157 @@ function handleChat(message) {
     }
 }
 
+function handleGame(message) {
+    var messageWithoutHeader = message.replace("Game:", "");
+    var gameArray = messageWithoutHeader.split(",");
+    console.log(gameArray);
+
+    if (gameArray[2] == lobbyUUID) {
+        if (gameArray[3] == uuid || gameArray[4] == uuid) {
+            gameUUID = gameArray[1];
+            if (gameArray[0] == "duos") {
+                selectedMode = "duos";
+                startGame("duos");
+            }
+        }
+    }
+}
+
+function startGame(gameMode) {
+    connection.send("start" + gameMode + "," + gameUUID + "," + lobbyUUID);
+}
+
+function handleGrid(message) {
+    var messageWithoutHeader = message.replace("Grid:", "");
+    var gridArray = messageWithoutHeader.split(",");
+    console.log(gridArray);
+
+    if (gridArray[0] == uuid || gridArray[1] == uuid) {
+        var newArray = gridArray.slice(2);
+        setScreen(newArray);
+    }
+}
+
+function setScreen(gridArray) {
+    var table = document.createElement("table");
+
+    for (var i = 0; i < 20; i++) {
+        var row = document.createElement("tr");
+        for (var j = 0; j < 20; j++) {
+            var cell = document.createElement("td");
+            var index = i * 20 + j;
+            cell.textContent = gridArray[index];
+            row.appendChild(cell);
+        }
+        table.appendChild(row);
+    }
+
+    var word_grid = document.getElementById("word_grid");
+    word_grid.appendChild(table);
+    console.log("table created");
+
+    lobbyContainer.style.display = "none";
+    gameHud.style.display = "block";
+}
+
+function handleLocations(message) {
+    var messageWithoutHeader = message.replace("Locations:", "");
+    var locationArray = messageWithoutHeader.split(",");
+    console.log(locationArray);
+
+    if (locationArray[0] == gameUUID) {
+        var newArray = locationArray.slice(1);
+        console.log(newArray);
+        var stringWithCommas = newArray.join(',');
+        parseGridString(stringWithCommas);
+    }
+}
+
+function parseGridString(gridString) {
+    const grids = gridString.split(',');
+    const parsedGrids = [];
+
+    grids.forEach(grid => {
+        const [index, iStart, jStart, iEnd, jEnd] = grid.split('=');
+        const start = [parseInt(iStart), parseInt(jStart)];
+        const end = [parseInt(iEnd), parseInt(jEnd)];
+        
+        if (!parsedGrids[index]) {
+            parsedGrids[index] = {
+                start: [],
+                end: []
+            };
+        }
+
+        parsedGrids[index].start = start;
+        parsedGrids[index].end = end;
+    });
+    console.log(parsedGrids);
+    wordLocations = parsedGrids;
+}
+
+var player1 = document.createElement("div");
+var player2 = document.createElement("div");
+
+function handleGamePlayers(message) {
+    var messageWithoutHeader = message.replace("GamePlayers:", "");
+    var gamePlayerArray = messageWithoutHeader.split(",");
+    console.log(gamePlayerArray);
+
+    if (gamePlayerArray[0] == gameUUID) {
+        var game_players = document.getElementById("game_players");
+
+        player1.innerHTML = gamePlayerArray[1];
+        player2.innerHTML = gamePlayerArray[2];
+
+        player1.style.color = //function that returns color using parameter
+        player2.style.color = 
+
+        game_players.appendChild(player1);
+        game_players.appendChild(player2);
+    }
+}
+
+function handleWordBank(message) {
+    var messageWithoutHeader = message.replace("WordBank:", "");
+    var wordbankArray = messageWithoutHeader.split(",");
+    console.log(wordbankArray);
+
+    if (wordbankArray[0] == gameUUID) {
+        var newArray = wordbankArray.slice(1);
+        console.log(newArray);
+        setWordBank(newArray);
+    }
+}
+
+function setWordBank(wordBank) {
+    var table = document.createElement("table");
+
+    for (var i = 0; i < 3; i++) {
+        var row = document.createElement("tr");
+        for (var j = 0; j < 4; j++) {
+            var cell = document.createElement("td");
+            var index = i * 4 + j;
+            cell.textContent = wordBank[index];
+            row.appendChild(cell);
+        }
+        table.appendChild(row);
+    }
+
+    var word_grid = document.getElementById("word_bank");
+    word_grid.appendChild(table);
+    console.log("table created");
+
+    lobbyContainer.style.display = "none";
+    gameHud.style.display = "block";
+}
+
+
 //use connection.send to send data back to websocket
 //use broadcast to send stuff from app.java to javascript
+
+
+//ERRORS CURRENTLY HAPPENING, if both are null while typing in nick, it crashes(invisible crash)
+//fix is probably sending player uuid and nickname from to java and back to js to verify that the nickname belongs to whomever
     </script>
 </html>
