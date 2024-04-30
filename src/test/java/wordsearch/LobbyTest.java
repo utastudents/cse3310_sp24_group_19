@@ -5,10 +5,10 @@ import static org.junit.Assert.*;
 
 public class LobbyTest {
 
-    private LobbyTest lobby;
-    private PlayerTest player1;
-    private PlayerTest player2;
-    private ChatMessagesTest chatMessage;
+    // private LobbyTest lobby;
+    // private PlayerTest player1;
+    // private PlayerTest player2;
+    // private ChatMessagesTest chatMessage;
 
    
     // public void setUp() {
