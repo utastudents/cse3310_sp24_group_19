@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 
 public class PlayerTest {
 
-    private Player player;
+    private PlayerTest player;
     private WebSocket connection;
 
   
