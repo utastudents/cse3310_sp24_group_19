@@ -5,13 +5,13 @@ import static org.junit.Assert.*;
 
 public class GameServerTest {
 
-    private GameServer gameServer;
-    private Player player1;
-    private Player player2;
+    private GameServerTest gameServer;
+    private PlayerTest player1;
+    private PlayerTest player2;
 
  
     public void setUp() {
-        gameServer = new GameServer();
+        gameServer = new GameServerTest();
         player1 = new Player("uuid1", null);
         player2 = new Player("uuid2", null);
     }
