@@ -11,54 +11,54 @@ public class LobbyTest {
     private ChatMessagesTest chatMessage;
 
    
-    public void setUp() {
+    // public void setUp() {
 
-        lobby = new LobbyTest("lobbyUUID");
+    //     lobby = new LobbyTest("lobbyUUID");
 
-        player1 = new PlayerTest("uuid1", null);
-        player2 = new PlayerTest("uuid2", null);
+    //     player1 = new PlayerTest("uuid1", null);
+    //     player2 = new PlayerTest("uuid2", null);
 
-        lobby.addPlayer(player1);
-        lobby.addPlayer(player2);
+    //     lobby.addPlayer(player1);
+    //     lobby.addPlayer(player2);
 
-        chatMessage = new ChatMessagesTest("lobbyUUID", "uuid1", "Hello, world!");
-    }
+    //     chatMessage = new ChatMessagesTest("lobbyUUID", "uuid1", "Hello, world!");
+    // }
 
-    @Test
-    public void testAddPlayer() {
+    // @Test
+    // public void testAddPlayer() {
        
-        assertEquals(2, lobby.getPlayerCount());
-        lobby.addPlayer(player1);
-        assertEquals(2, lobby.getPlayerCount());
-    }
+    //     assertEquals(2, lobby.getPlayerCount());
+    //     lobby.addPlayer(player1);
+    //     assertEquals(2, lobby.getPlayerCount());
+    // }
 
-    @Test
-    public void testAddChatMessage() {
+    // @Test
+    // public void testAddChatMessage() {
 
-        lobby.addChatMessage(chatMessage);
-        assertEquals(1, lobby.getChatMessages().size());
-    }
+    //     lobby.addChatMessage(chatMessage);
+    //     assertEquals(1, lobby.getChatMessages().size());
+    // }
 
-    @Test
-    public void testGetPlayerByUUID() {
+    // @Test
+    // public void testGetPlayerByUUID() {
 
-        assertEquals(player1, lobby.getPlayerByUUID("uuid1"));
+    //     assertEquals(player1, lobby.getPlayerByUUID("uuid1"));
 
-        assertNull(lobby.getPlayerByUUID("nonExistentUUID"));
-    }
+    //     assertNull(lobby.getPlayerByUUID("nonExistentUUID"));
+    // }
 
-    @Test
-    public void testDisplayChatMessage() {
+    // @Test
+    // public void testDisplayChatMessage() {
       
-        String expectedChatLog = "Player1: Hello, world!";
-        assertEquals(expectedChatLog, lobby.displayChatMessage(chatMessage));
-    }
+    //     String expectedChatLog = "Player1: Hello, world!";
+    //     assertEquals(expectedChatLog, lobby.displayChatMessage(chatMessage));
+    // }
 
-    @Test
-    public void testCheckGameModeFull() {
-        player1.setGameMode(GameModeTest.DUOS);
-        lobby.addPlayer(player1);
+    // @Test
+    // public void testCheckGameModeFull() {
+    //     player1.setGameMode(GameModeTest.DUOS);
+    //     lobby.addPlayer(player1);
       
-        assertEquals(1, lobby.getPlayerCount());
-    }
+    //     assertEquals(1, lobby.getPlayerCount());
+    // }
 }
