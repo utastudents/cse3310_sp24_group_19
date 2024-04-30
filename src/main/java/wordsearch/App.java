@@ -227,13 +227,13 @@ public class App extends WebSocketServer {
 
     public static void main(String[] args) {
         // Set up the http server
-        int port = 9080;
+        int port = 9019;
         HttpServer H = new HttpServer(port, "./html");
         H.start();
         System.out.println("http Server started on port:" + port);
 
         // create and start the websocket server
-        port = 9880;
+        port = 9119;
         App A = new App(port);
         A.start();
         System.out.println("websocket Server started on port: " + port);
