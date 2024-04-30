@@ -6,8 +6,8 @@ public class GameModeTest {
     @Test
     public void testGameModeEnumValues() {
         
-        assertEquals("DUOS", GameMode.DUOS.name());
+        assertEquals("DUOS", GameModeTest.DUOS.name());
         
-        assertEquals("SQUADS", GameMode.SQUADS.name());
+        assertEquals("SQUADS", GameModeTest.SQUADS.name());
     }
 }
