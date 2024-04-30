@@ -12,3 +12,5 @@ public class HttpServerTest {
         HttpServer httpServer = new HttpServer(portNum, dirName);
 
         httpServer.start();
+    }
+}
