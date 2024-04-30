@@ -6,7 +6,7 @@ public class UUIDGeneratorTest {
     @Test
     public void testGenerateUUID() {
        
-        String uuid = UUIDGenerator.generateUUID();
+        String uuid = UUIDGeneratorTest.generateUUID();
       
         assertNotNull(uuid);
        
