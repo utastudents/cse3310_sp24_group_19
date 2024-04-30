@@ -11,8 +11,7 @@ public class PlayerTest {
 
   
     public void setUp() {
-        connection = new MockWebSocket();
-        player = new Player("uuid123", connection);
+        player = new PlayerTest("uuid123", connection);
     }
 
     @Test
