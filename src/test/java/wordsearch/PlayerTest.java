@@ -35,3 +35,4 @@ public class PlayerTest {
         player.setGameMode(GameMode.DUOS);
         assertEquals(GameMode.DUOS, player.getPlayerGameMode());
     }
+}
