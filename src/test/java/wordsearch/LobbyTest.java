@@ -5,23 +5,23 @@ import static org.junit.Assert.*;
 
 public class LobbyTest {
 
-    private Lobby lobby;
-    private Player player1;
-    private Player player2;
-    private ChatMessages chatMessage;
+    private LobbyTest lobby;
+    private PlayerTest player1;
+    private PlayerTest player2;
+    private ChatMessagesTest chatMessage;
 
    
     public void setUp() {
 
-        lobby = new Lobby("lobbyUUID");
+        lobby = new LobbyTest("lobbyUUID");
 
-        player1 = new Player("uuid1", null);
-        player2 = new Player("uuid2", null);
+        player1 = new PlayerTest("uuid1", null);
+        player2 = new PlayerTest("uuid2", null);
 
         lobby.addPlayer(player1);
         lobby.addPlayer(player2);
 
-        chatMessage = new ChatMessages("lobbyUUID", "uuid1", "Hello, world!");
+        chatMessage = new ChatMessagesTest("lobbyUUID", "uuid1", "Hello, world!");
     }
 
     @Test
@@ -56,7 +56,7 @@ public class LobbyTest {
 
     @Test
     public void testCheckGameModeFull() {
-        player1.setGameMode(GameMode.DUOS);
+        player1.setGameMode(GameModeTest.DUOS);
         lobby.addPlayer(player1);
       
         assertEquals(1, lobby.getPlayerCount());
