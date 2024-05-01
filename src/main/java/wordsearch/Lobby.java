@@ -45,12 +45,12 @@ public class Lobby {
         System.out.println("=>    " + this.gameModeQueue);
     }
 
-    public String returnGameModeQueue() {
-        String queueList = "";
-        for (Player users : this.gameModeQueue) {
-            queueList += users + ",";
-        }
-        return queueList;
+    public int returnGameModeQueue() {
+        return this.gameModeQueue.size();
+    }
+
+    public List<String> getGameModeQueue() {
+    
     }
 
     public List<Player> getPlayerList() {
@@ -121,8 +121,8 @@ public class Lobby {
         // if lobby gamemode has 2 players in it
 
         // THIS IS THE ISSUE LMFAO
-        int max = 2;
-        if (this.gameModeQueue.size() == max) {
+        //if (this.gameModeQueue.size 
+        if (this.gameModeQueue.size() == 2) {
             System.out.println("GAME BOUT TO START");
             Player player_1 = this.gameModeQueue.get(0);
             Player player_2 = this.gameModeQueue.get(1);
