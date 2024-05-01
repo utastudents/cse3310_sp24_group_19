@@ -45,6 +45,14 @@ public class Lobby {
         System.out.println("=>    " + this.gameModeQueue);
     }
 
+    public String returnGameModeQueue() {
+        String queueList = "";
+        for (Player users : this.gameModeQueue) {
+            queueList += users + ",";
+        }
+        return queueList;
+    }
+
     public List<Player> getPlayerList() {
         return players;
     }
