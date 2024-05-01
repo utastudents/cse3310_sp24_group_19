@@ -198,9 +198,8 @@ playDuos.addEventListener("click", function() {
 
     selectedMode = "duos";
     playSquads.disabled = true;
-    console.log("button worked");
+    console.log("duos selected");
     connection.send("mode" + uuid + "," + lobbyUUID + "," +  "duos");
-    console.log("did it actually work");
 });
 
 function handlePlayersOnline(message) {
