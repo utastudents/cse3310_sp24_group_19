@@ -129,7 +129,7 @@ public class App extends WebSocketServer {
                 broadcast("else?");
             }
 
-            String queue = lobby.returnGameModeQueue();
+            int queue = lobby.returnGameModeQueue();
             broadcast(queue);
 
             // probably gonna have to make a queue system
