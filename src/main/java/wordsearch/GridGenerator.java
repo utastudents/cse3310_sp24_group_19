@@ -41,10 +41,9 @@ public class GridGenerator {
                 if (canPlaceWord(word, row, col, direction)) {
                     placeWord(word, row, col, direction);
                     placed = true;
-                    // System.out.println("Word: " + word + " starts at (" + row + ", " + col + ")
-                    // and ends at ("
-                    // + (row + (word.length() - 1) * getDeltaRow(direction)) + ", "
-                    // + (col + (word.length() - 1) * getDeltaCol(direction)) + ")");
+                    System.out.println("Word: " + word + " starts at (" + row + ", " + col + ") and ends at ("
+                            + (row + (word.length() - 1) * getDeltaRow(direction)) + ", "
+                            + (col + (word.length() - 1) * getDeltaCol(direction)) + ")");
                     String wordLocation = count + "=" + row + "=" + col + "="
                             + (row + (word.length() - 1) * getDeltaRow(direction)) + "="
                             + (col + (word.length() - 1) * getDeltaCol(direction));

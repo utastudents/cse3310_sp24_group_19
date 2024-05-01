@@ -155,7 +155,8 @@ public class App extends WebSocketServer {
                 String gridCharacters = wordGrid.getGridCharacters();
 
                 for (Player players : playerList) {
-                    System.out.println("COLORS=>" + players.getNick() + "=" + players.getColor().getHexCode());
+                    // System.out.println("COLORS=>" + players.getNick() + "=" +
+                    // players.getColor().getHexCode());
                 }
                 // System.out.println("COLORS=>" + game.)
 
@@ -182,7 +183,6 @@ public class App extends WebSocketServer {
                     } else {
                         wordLocations += word + ",";
                     }
-
                 }
                 broadcast("Locations:" + startArray[1] + "," + wordLocations);
                 // System.out.println(wordLocations);
@@ -197,10 +197,15 @@ public class App extends WebSocketServer {
                         wordBanks += word + ",";
                     }
                     // System.out.println(count + ". bank=> " + word);
-
                 }
                 broadcast("WordBank:" + startArray[1] + "," + wordBanks);
             }
+        }
+
+        if (message.contains("find")) {
+            String msgArray = message.replace("find", "");
+            String[] findArray = msgArray.split(",");
+            broadcast("Find:" + findArray[0] + "," + findArray[1] + "," + findArray[2]);
         }
     }
 
@@ -227,13 +232,13 @@ public class App extends WebSocketServer {
 
     public static void main(String[] args) {
         // Set up the http server
-        int port = 9019;
+        int port = 9080;
         HttpServer H = new HttpServer(port, "./html");
         H.start();
         System.out.println("http Server started on port:" + port);
 
         // create and start the websocket server
-        port = 9119;
+        port = 9880;
         App A = new App(port);
         A.start();
         System.out.println("websocket Server started on port: " + port);

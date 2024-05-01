@@ -8,6 +8,7 @@ public class Player {
     private String nick;
     private WebSocket connection;
     private int score;
+    private int points;
     private PlayerColors.Color color;
     private GameMode gameMode;
 
@@ -42,5 +43,17 @@ public class Player {
 
     public void setPlayerColor(PlayerColors.Color playerColor) {
         this.color = playerColor;
+    }
+
+    public void setScore() {
+        this.score = 0;
+    }
+
+    public void addScore(int points) {
+        this.score = this.score + points;
+    }
+
+    public int getScore() {
+        return this.score;
     }
 }
