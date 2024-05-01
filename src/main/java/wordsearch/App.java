@@ -133,7 +133,7 @@ public class App extends WebSocketServer {
             broadcast(queue);
 
             // probably gonna have to make a queue system
-            if (lobby.checkGameModeFull() == true) {
+            if (lobby.checkGameModeFull()) {
                 System.out.println("game will start very soon...");
                 Game game = lobby.getGameByPlayer(modeArray[0]);
                 game.setGameState(GameState.PREPARE);
