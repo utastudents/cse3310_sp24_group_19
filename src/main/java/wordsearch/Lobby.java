@@ -113,6 +113,7 @@ public class Lobby {
     }
 
     public boolean checkGameModeFull() {
+        
         // loop through playerlist, get their gamemode
         int duosCount = 0;
         int squdsCount = 0;
