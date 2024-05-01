@@ -118,12 +118,15 @@ public class App extends WebSocketServer {
             String[] modeArray = msgArray.split(",");
             Player player = gameServer.getPlayerByUUID(modeArray[0]);
             Lobby lobby = gameServer.getLobbyByUUID(modeArray[1]);
+            broadcast("did we reach here?");
 
             if (modeArray[2].equals("duos")) {
                 player.setGameMode(GameMode.DUOS);
                 lobby.addPlayerGameModeQueue(player);
+                broadcast("did that queue work?");
             } else {
                 player.setGameMode(GameMode.SQUADS);
+                broadcast("else?");
             }
 
             // probably gonna have to make a queue system
@@ -133,8 +136,10 @@ public class App extends WebSocketServer {
                 game.setGameState(GameState.PREPARE);
                 broadcast("Game:" + "duos" + "," + game.getGameUUID() + "," + lobby.getLobbyUUID() + ","
                         + game.getPlayerList().get(0).getUUID() + "," + game.getPlayerList().get(1).getUUID());
+                broadcast("nothing worked at all");
             } else {
                 System.out.println("game not starting");
+                broadcast("HMMMMMM");
             }
         }
 
