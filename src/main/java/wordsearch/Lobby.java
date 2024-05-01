@@ -49,10 +49,6 @@ public class Lobby {
         return this.gameModeQueue.size();
     }
 
-    public List<String> getGameModeQueue() {
-    
-    }
-
     public List<Player> getPlayerList() {
         return players;
     }
