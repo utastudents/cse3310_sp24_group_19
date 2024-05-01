@@ -38,6 +38,7 @@ public class Lobby {
         System.out.println("message has been sent");
     }
 
+    // gonna have to make seperate 1 for squads
     public void addPlayerGameModeQueue(Player player) {
         this.gameModeQueue.add(player);
         System.out.println("player has joined queue");
@@ -109,6 +110,9 @@ public class Lobby {
         int squdsCount = 0;
         System.out.println(this.gameModeQueue);
         // if lobby gamemode has 2 players in it
+
+        // THIS IS THE ISSUE LMFAO
+
         if (this.gameModeQueue.size() == 2) {
             System.out.println("GAME BOUT TO START");
             Player player_1 = this.gameModeQueue.get(0);
@@ -117,6 +121,10 @@ public class Lobby {
             this.addGame(game);
             game.addPlayer(player_1);
             game.addPlayer(player_2);
+
+            // REMOVE PLAYERS FROM GAMEMODE SO NEW CAN BE CREATED
+            this.gameModeQueue.remove(player_1);
+            this.gameModeQueue.remove(player_2);
 
             // setting colors
             List<Player> gamePlayerList = game.getPlayerList();
@@ -129,7 +137,7 @@ public class Lobby {
                 Player player = gamePlayerList.get(i);
                 PlayerColors.Color color = shuffledColors[i];
                 player.setPlayerColor(color);
-                //System.out.println(player.getNick() + "=" + color);
+                // System.out.println(player.getNick() + "=" + color);
             }
             return true;
         }
