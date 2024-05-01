@@ -117,8 +117,9 @@ public class Lobby {
         // if lobby gamemode has 2 players in it
 
         // THIS IS THE ISSUE LMFAO
-        //if (this.gameModeQueue.size 
-        if (this.gameModeQueue.size() == 2) {
+        String queueSize = this.gameModeQueue.size() + "";
+        String maxSize = "2";
+        if (queueSize.equals("2")) {
             System.out.println("GAME BOUT TO START");
             Player player_1 = this.gameModeQueue.get(0);
             Player player_2 = this.gameModeQueue.get(1);
