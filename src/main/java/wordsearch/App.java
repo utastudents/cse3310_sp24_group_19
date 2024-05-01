@@ -130,7 +130,7 @@ public class App extends WebSocketServer {
             }
 
             int queue = lobby.returnGameModeQueue();
-            broadcast(queue + "");
+            broadcast(queue + "=");
 
             // probably gonna have to make a queue system
             if (lobby.checkGameModeFull()) {
