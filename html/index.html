@@ -117,6 +117,8 @@ connection.onmessage = function (evt) {
 
     //handle game
     if (message.includes("Game:")) {
+        console.log(message);
+        console.log("HELLO SEND");
         handleGame(message);
     }
 
@@ -196,7 +198,9 @@ playDuos.addEventListener("click", function() {
 
     selectedMode = "duos";
     playSquads.disabled = true;
+    console.log("button worked");
     connection.send("mode" + uuid + "," + lobbyUUID + "," +  "duos");
+    console.log("did it actually work");
 });
 
 function handlePlayersOnline(message) {
