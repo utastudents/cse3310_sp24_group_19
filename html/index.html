@@ -45,6 +45,7 @@
             <div id="game_players" class="player_nick"></div>
             <div id="container">
                 <div id="word_grid" class="word_grid"></div>
+                <div class="words">Word Bank</div>
                 <div id="word_bank" class="word_grid"></div>
             </div>
         </gamehud>
@@ -62,8 +63,11 @@ var gameUUID = null;
 var selectedMode = "";
 var color = "";
 var wordLocations;
+var selectedCells = [];
+var cellStatus = [];
+var wordBankList = [];
 var serverUrl;
-serverUrl = "ws://" + window.location.hostname + ":9119";
+serverUrl = "ws://" + window.location.hostname + ":9880";
 // Create the connection with the server
 connection = new WebSocket(serverUrl);
 
@@ -134,6 +138,11 @@ connection.onmessage = function (evt) {
     //handle wordbank
     if (message.includes("WordBank:")) {
         handleWordBank(message);
+    }
+
+    //handle finds
+    if (message.includes("Find:")) {
+        handleFind(message);
     }
 }
 
@@ -280,6 +289,7 @@ function handleGrid(message) {
 
 function setScreen(gridArray) {
     var table = document.createElement("table");
+    table.id = "word_search";
 
     for (var i = 0; i < 20; i++) {
         var row = document.createElement("tr");
@@ -287,10 +297,108 @@ function setScreen(gridArray) {
             var cell = document.createElement("td");
             var index = i * 20 + j;
             cell.textContent = gridArray[index];
+            cell.setAttribute("data-row", i);
+            cell.setAttribute("data-col", j);
             row.appendChild(cell);
         }
         table.appendChild(row);
     }
+
+    table.addEventListener("click", function(event) {
+        // Check if the clicked element is a cell
+        if (event.target.tagName === "TD") {
+            // Retrieve the coordinates from the cell's attributes
+            var clickedRow = parseInt(event.target.getAttribute("data-row"));
+            var clickedCol = parseInt(event.target.getAttribute("data-col"));
+            // Check if the cell is already selected
+            var index = selectedCells.findIndex(function(cell) {
+                return cell.row === clickedRow && cell.col === clickedCol;
+            });
+            if (index !== -1) {
+                // Cell is already selected, toggle its background color
+                event.target.style.backgroundColor = event.target.style.backgroundColor === color ? "" : color;
+            } else {
+                // Cell is not selected, remove red background color from previously selected cells
+                selectedCells.forEach(function(cell) {
+                    var selectedCell = table.rows[cell.row].cells[cell.col];
+                    selectedCell.style.backgroundColor = "";
+                });
+                // Update selected cell coordinates array with the current and previous clicked cells
+                selectedCells.push({row: clickedRow, col: clickedCol});
+                // If more than 2 cells are selected, remove the oldest one
+                if (selectedCells.length == 2) {
+                    var selectedStart = selectedCells[0];
+                    var selectedEnd = selectedCells[1];
+                    var matchedWordIndex = -1;
+
+                    wordLocations.forEach(function(word, index) {
+                        if (word.start[0] === selectedStart.row && word.start[1] === selectedStart.col &&
+                            word.end[0] === selectedEnd.row && word.end[1] === selectedEnd.col) {
+                            matchedWordIndex = index;
+                            return;
+                        }
+                        if (word.start[0] === selectedEnd.row && word.start[1] === selectedEnd.col &&
+                            word.end[0] === selectedStart.row && word.end[1] === selectedStart.col) {
+                            matchedWordIndex = index;
+                            return;
+                        }
+                    });
+
+                    // If the selected cells match a word location, do something
+                    if (matchedWordIndex !== -1) {
+                        console.log("Selected cells match word at index: " + matchedWordIndex);
+                        connection.send("find" + gameUUID + "," + color + "," + matchedWordIndex);
+                        // Do something with the matched word
+                        var startRow = selectedStart.row;
+                        var startCol = selectedStart.col;
+                        var endRow = selectedEnd.row;
+                        var endCol = selectedEnd.col;
+
+                    }
+                }
+                if (selectedCells.length > 2) {
+                    selectedCells.shift();
+                    console.log("new find");
+                    var selectedStart = selectedCells[0];
+                    var selectedEnd = selectedCells[1];
+                    var matchedWordIndex = -1;
+
+                    wordLocations.forEach(function(word, index) {
+                        if (word.start[0] === selectedStart.row && word.start[1] === selectedStart.col &&
+                            word.end[0] === selectedEnd.row && word.end[1] === selectedEnd.col) {
+                            matchedWordIndex = index;
+                            return;
+                        }
+                        if (word.start[0] === selectedEnd.row && word.start[1] === selectedEnd.col &&
+                            word.end[0] === selectedStart.row && word.end[1] === selectedStart.col) {
+                            matchedWordIndex = index;
+                            return;
+                        }
+                    });
+
+                    // If the selected cells match a word location, do something
+                    if (matchedWordIndex !== -1) {
+                        console.log("Selected cells match word at index: " + matchedWordIndex);
+                        connection.send("find" + gameUUID + "," + color + "," + matchedWordIndex);
+                        //delete word from wordlocations
+
+                        // Do something with the matched word
+                        var startRow = selectedStart.row;
+                        var startCol = selectedStart.col;
+                        var endRow = selectedEnd.row;
+                        var endCol = selectedEnd.col;
+
+                    }
+                }
+                // Set the background color of the clicked cells to red
+                selectedCells.forEach(function(cell) {
+                    var selectedCell = table.rows[cell.row].cells[cell.col];
+                    selectedCell.style.backgroundColor = color;
+                });
+            }
+            // Log the coordinates of the last selected cell
+        }
+    });
 
     var word_grid = document.getElementById("word_grid");
     word_grid.appendChild(table);
@@ -299,6 +407,8 @@ function setScreen(gridArray) {
     lobbyContainer.style.display = "none";
     gameHud.style.display = "block";
 }
+
+
 
 function handleLocations(message) {
     var messageWithoutHeader = message.replace("Locations:", "");
@@ -350,8 +460,20 @@ function handleGamePlayers(message) {
         player1.innerHTML = gamePlayerArray[1];
         player2.innerHTML = gamePlayerArray[2];
 
-        player1.style.color = //function that returns color using parameter
-        player2.style.color = 
+        player1.style.color = gamePlayerArray[3];
+        player2.style.color = gamePlayerArray[4];
+
+        if (gamePlayerArray[1] == nickName) {
+            console.log("match");
+            color = gamePlayerArray[3];
+            document.documentElement.style.setProperty('--td-background-color', gamePlayerArray[3] + "50");
+        }
+
+        if (gamePlayerArray[2] == nickName) {
+            console.log("match");
+            color = gamePlayerArray[4];
+            document.documentElement.style.setProperty('--td-background-color', gamePlayerArray[4] + "50");
+        }
 
         game_players.appendChild(player1);
         game_players.appendChild(player2);
@@ -367,11 +489,13 @@ function handleWordBank(message) {
         var newArray = wordbankArray.slice(1);
         console.log(newArray);
         setWordBank(newArray);
+        wordBankList = newArray;
     }
 }
 
 function setWordBank(wordBank) {
     var table = document.createElement("table");
+    table.id = "the_word_bank";
 
     for (var i = 0; i < 3; i++) {
         var row = document.createElement("tr");
@@ -391,6 +515,120 @@ function setWordBank(wordBank) {
     lobbyContainer.style.display = "none";
     gameHud.style.display = "block";
 }
+
+function handleFind(message) {
+    var messageWithoutHeader = message.replace("Find:", "");
+    var findArray = messageWithoutHeader.split(",");
+    console.log(findArray);
+
+    var playerColor = findArray[1];
+    if (findArray[0] == gameUUID) {
+        var table = document.getElementById("word_search");
+        var selectedLocation = wordLocations[findArray[2]]
+
+        var startRow = selectedLocation.start[0];
+        var startCol = selectedLocation.start[1];
+        var endRow = selectedLocation.end[0];
+        var endCol = selectedLocation.end[1];
+
+        var startCell = table.rows[startRow].cells[startCol];
+        var endCell = table.rows[endRow].cells[endCol];
+        startCell.style.color = playerColor;
+        endCell.style.color = playerColor;
+
+        var direction = '';
+        if (startRow === endRow && startCol === endCol) {
+            return;
+        } else if (startRow === endRow) {
+            direction = 'horizontal';
+        } else if (startCol === endCol) {
+            direction = 'vertical';
+        } else {
+            direction = 'diagonal';
+        }
+
+        switch (direction) {
+            case 'horizontal':
+                for (var col = Math.min(startCol, endCol); col <= Math.max(startCol, endCol); col++) {
+                    var cell = table.rows[startRow].cells[col];
+                    cell.style.color = playerColor;
+                }
+                break;
+            case 'vertical':
+                for (var row = Math.min(startRow, endRow); row <= Math.max(startRow, endRow); row++) {
+                    var cell = table.rows[row].cells[startCol];
+                    cell.style.color = playerColor;
+                }
+                break;
+            case 'diagonal':
+                var rowIncrement = (endRow - startRow) / Math.abs(endRow - startRow);
+                var colIncrement = (endCol - startCol) / Math.abs(endCol - startCol);
+                var row = startRow;
+                var col = startCol;
+                while (row !== endRow || col !== endCol) {
+                    var cell = table.rows[row].cells[col];
+                    cell.style.color = playerColor;
+                    row += rowIncrement;
+                    col += colIncrement;
+                }
+                break;
+            default:
+                break;
+        }
+
+        selectedLocation.start[0] = 999;
+        selectedLocation.start[1] = 999;
+        selectedLocation.end[0] = 999;
+        selectedLocation.end[1] = 999;
+
+        updateWordBank(wordBankList, findArray[2], playerColor);
+    }
+}
+
+
+function updateWordBank(wordBank, wordNumber, color) {
+    var oldWordBank = document.getElementById("the_word_bank");
+    if (oldWordBank) {
+    var parent = oldWordBank.parentNode;
+    parent.removeChild(oldWordBank);
+}
+    var table = document.createElement("table");
+    table.id = "the_word_bank";
+
+    var count = 0;
+    for (var i = 0; i < 3; i++) {
+        var row = document.createElement("tr");
+        for (var j = 0; j < 4; j++) {
+            count++;
+            var cell = document.createElement("td");
+            var index = i * 4 + j;
+            cell.textContent = wordBank[index];
+
+            if (count == wordNumber) {
+                cell.style.backgroundColor = color;
+            }
+
+            row.appendChild(cell);
+        }
+        table.appendChild(row);
+
+        var word_grid = document.getElementById("word_bank");
+        word_grid.appendChild(table);
+        console.log("table updated");
+    }
+
+
+    var word_grid = document.getElementById("word_bank");
+    word_grid.appendChild(table);
+    console.log("table created");
+
+    lobbyContainer.style.display = "none";
+    gameHud.style.display = "block";
+}
+
+
+//WE HAVE TO ADD NICKNAME CHECK FOR "" blank username
+
 
 
 //use connection.send to send data back to websocket
