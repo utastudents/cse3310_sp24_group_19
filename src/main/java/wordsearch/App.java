@@ -43,6 +43,10 @@ public class App extends WebSocketServer {
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
 
+        String version;
+        version = System.getenv("VERSION") != null ? System.getenv("VERSION") : "local build";
+        broadcast("Version:" + version);
+
         String uuid = UUIDGenerator.generateUUID();
         Player player = new Player(uuid, conn);
         gameServer.addPlayer(player);
