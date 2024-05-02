@@ -31,6 +31,9 @@
                     <button id="sendChat" class="play_button chat_send">SEND</button>
                 </div>
             </div>
+            <div id="leader_board" class="leaderboard_box">LEADERBOARD
+                <div id="lb_text" class="leaderboard_logs"></div>
+            </div>
             <div id="container">
                 <div class="title">TheWordSearchGame</div>
                 <button id="play_duo" style="margin: 20px" class="play_button">PLAY (2 PLAYERS)</button>
@@ -43,6 +46,9 @@
         </lobby>
         <gamehud id="gamehud" class="gamehud" style="display: none;"">
             <div id="game_players" class="player_nick"></div>
+            <div id="leader_board" class="leaderboard_box">LEADERBOARD
+                <div id="lb_text_2" class="leaderboard_logs"></div>
+            </div>
             <div id="container">
                 <div id="word_grid" class="word_grid"></div>
                 <div class="words">Word Bank</div>
@@ -145,6 +151,11 @@ connection.onmessage = function (evt) {
     //handle finds
     if (message.includes("Find:")) {
         handleFind(message);
+    }
+
+    //handle leaderboard
+    if (message.includes("Leaderboard:")) {
+        handleLeaderBoard(message);
     }
 }
 
@@ -350,7 +361,7 @@ function setScreen(gridArray) {
                     // If the selected cells match a word location, do something
                     if (matchedWordIndex !== -1) {
                         console.log("Selected cells match word at index: " + matchedWordIndex);
-                        connection.send("find" + gameUUID + "," + color + "," + matchedWordIndex);
+                        connection.send("find" + gameUUID + "," + color + "," + matchedWordIndex + "," + uuid + "," + lobbyUUID);
                         // Do something with the matched word
                         var startRow = selectedStart.row;
                         var startCol = selectedStart.col;
@@ -382,7 +393,7 @@ function setScreen(gridArray) {
                     // If the selected cells match a word location, do something
                     if (matchedWordIndex !== -1) {
                         console.log("Selected cells match word at index: " + matchedWordIndex);
-                        connection.send("find" + gameUUID + "," + color + "," + matchedWordIndex);
+                        connection.send("find" + gameUUID + "," + color + "," + matchedWordIndex + "," + uuid + "," + lobbyUUID);
                         //delete word from wordlocations
 
                         // Do something with the matched word
@@ -629,8 +640,17 @@ function updateWordBank(wordBank, wordNumber, color) {
     gameHud.style.display = "block";
 }
 
+function handleLeaderBoard(message) {
+    var messageWithoutHeader = message.replace("Leaderboard:", "");
+    var leaderboardDiv = document.getElementById("lb_text");
+    var leaderboardDiv2 = document.getElementById("lb_text_2");
+    leaderboardDiv.innerText = messageWithoutHeader;
+    leaderboardDiv2.innerText = messageWithoutHeader;
+}
 
 //WE HAVE TO ADD NICKNAME CHECK FOR "" blank username
+
+
 
 //use connection.send to send data back to websocket
 //use broadcast to send stuff from app.java to javascript
