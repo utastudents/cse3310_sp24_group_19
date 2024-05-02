@@ -98,6 +98,12 @@ connection.onmessage = function (evt) {
     }
 
     //handle players online
+    if (message.includes("Version:")) {
+        var messageWithoutHeader = message.replace("Version:", "");
+        document.title = messageWithoutHeader;
+    }
+
+    //handle players online
     if (message.includes("PlayersOnline")) {
         console.log("PlayersOnline:");
         handlePlayersOnline(message);
