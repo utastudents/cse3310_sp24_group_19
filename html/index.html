@@ -98,8 +98,8 @@ connection.onmessage = function (evt) {
     }
 
     //handle players online
-    if (message.includes("Version:")) {
-        var messageWithoutHeader = message.replace("Version:", "");
+    if (message.includes("ENV:")) {
+        var messageWithoutHeader = message.replace("ENV:", "");
         document.title = messageWithoutHeader;
     }
 
