@@ -109,6 +109,13 @@ public class App extends WebSocketServer {
             ChatMessages userMessage = new ChatMessages(chatArray[0], chatArray[1], chatArray[2]);
             Lobby lobby = gameServer.getLobbyByUUID(chatArray[0]);
             lobby.addChatMessage(userMessage);
+            String gamesList = "";
+            List<Game> listofGames = lobby.getGameList();
+            for (Game games : listofGames) {
+                gamesList += games;
+            }
+            broadcast(gamesList);
+            
             broadcast("Chat:" + lobby.getLobbyUUID() + "," + lobby.displayChatMessage(userMessage));
         }
 
