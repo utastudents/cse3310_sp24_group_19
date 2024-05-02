@@ -97,6 +97,8 @@ public class App extends WebSocketServer {
             System.out.println(player + " has been added to lobby:" + lobby.getLobbyUUID());
             broadcast("Lobby:" + lobby.getLobbyUUID() + "," + uuid);
             updatePlayersInLobby(lobby.getLobbyUUID());
+            String lb = gameServer.getLeaderBoard();
+            broadcast("Leaderboard:" + lb);
         }
 
         // chat handling
@@ -205,6 +207,10 @@ public class App extends WebSocketServer {
         if (message.contains("find")) {
             String msgArray = message.replace("find", "");
             String[] findArray = msgArray.split(",");
+            Player player = gameServer.getPlayerByUUID(findArray[3]);
+            player.addScore(100);
+            String lb = gameServer.getLeaderBoard();
+            broadcast("Leaderboard:" + lb);
             broadcast("Find:" + findArray[0] + "," + findArray[1] + "," + findArray[2]);
         }
     }

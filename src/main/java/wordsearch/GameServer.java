@@ -81,4 +81,9 @@ public class GameServer {
         }
         return null;
     }
+
+    public String getLeaderBoard() {
+        String lb = LeaderBoard.generateLeaderBoard(players);
+        return lb;
+    }
 }

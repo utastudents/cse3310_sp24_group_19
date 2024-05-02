@@ -7,7 +7,7 @@ public class Player {
     private String name;
     private String nick;
     private WebSocket connection;
-    private int score;
+    private int score = 0;
     private int points;
     private PlayerColors.Color color;
     private GameMode gameMode;
