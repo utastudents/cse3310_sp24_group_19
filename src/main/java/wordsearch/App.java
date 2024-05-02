@@ -130,7 +130,7 @@ public class App extends WebSocketServer {
             }
 
             String queue = lobby.returnGameModeQueue() + "";
-            if (queue.equals("2")) { broadcast("GAME STARTING!"); }     
+            if (queue.equals("2")) { broadcast("GAME STARTING!"); lobby.createGame(); Game game = lobby.getGameByPlayer(modeArray[0]); broadcast("Game:" + "duos" + "," + game.getGameUUID() + "," + lobby.getLobbyUUID() + "," + game.getPlayerList().get(0).getUUID() + "," + game.getPlayerList().get(1).getUUID());  }     
 
             // probably gonna have to make a queue system
             // if (lobby.checkGameModeFull()) {
