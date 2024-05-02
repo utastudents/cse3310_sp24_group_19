@@ -109,13 +109,6 @@ public class App extends WebSocketServer {
             ChatMessages userMessage = new ChatMessages(chatArray[0], chatArray[1], chatArray[2]);
             Lobby lobby = gameServer.getLobbyByUUID(chatArray[0]);
             lobby.addChatMessage(userMessage);
-            String gamesList = "";
-            List<Game> listofGames = lobby.getGameList();
-            for (Game games : listofGames) {
-                gamesList += games;
-            }
-            broadcast(gamesList);
-            
             broadcast("Chat:" + lobby.getLobbyUUID() + "," + lobby.displayChatMessage(userMessage));
         }
 
@@ -125,28 +118,23 @@ public class App extends WebSocketServer {
             String[] modeArray = msgArray.split(",");
             Player player = gameServer.getPlayerByUUID(modeArray[0]);
             Lobby lobby = gameServer.getLobbyByUUID(modeArray[1]);
-            broadcast("did we reach here?");
 
             if (modeArray[2].equals("duos")) {
                 player.setGameMode(GameMode.DUOS);
                 lobby.addPlayerGameModeQueue(player);
-                broadcast("did that queue work?");
             } else {
                 player.setGameMode(GameMode.SQUADS);
-                broadcast("else?");
             }
 
-            String queue = lobby.returnGameModeQueue() + "";    
             // probably gonna have to make a queue system
-            if (queue.equals("2")) {
+            if (lobby.checkGameModeFull() == true) {
                 System.out.println("game will start very soon...");
                 Game game = lobby.getGameByPlayer(modeArray[0]);
                 game.setGameState(GameState.PREPARE);
                 broadcast("Game:" + "duos" + "," + game.getGameUUID() + "," + lobby.getLobbyUUID() + ","
-                        + game.getPlayerList().get(0).getUUID() + "," + game.getPlayerList().get(1).getUUID());     
+                        + game.getPlayerList().get(0).getUUID() + "," + game.getPlayerList().get(1).getUUID());
             } else {
                 System.out.println("game not starting");
-                broadcast("HMMMMMM");
             }
         }
 

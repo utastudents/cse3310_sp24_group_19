@@ -45,8 +45,12 @@ public class Lobby {
         System.out.println("=>    " + this.gameModeQueue);
     }
 
-    public int returnGameModeQueue() {
-        return this.gameModeQueue.size();
+    public String returnGameModeQueue() {
+        String queueList = "";
+        for (Player users : this.gameModeQueue) {
+            queueList += users + ",";
+        }
+        return queueList;
     }
 
     public List<Player> getPlayerList() {
@@ -109,7 +113,6 @@ public class Lobby {
     }
 
     public boolean checkGameModeFull() {
-        
         // loop through playerlist, get their gamemode
         int duosCount = 0;
         int squdsCount = 0;
@@ -117,9 +120,8 @@ public class Lobby {
         // if lobby gamemode has 2 players in it
 
         // THIS IS THE ISSUE LMFAO
-        String queueSize = this.gameModeQueue.size() + "";
-        String maxSize = "2";
-        if (queueSize.equals("2")) {
+
+        if (this.gameModeQueue.size() == 2) {
             System.out.println("GAME BOUT TO START");
             Player player_1 = this.gameModeQueue.get(0);
             Player player_2 = this.gameModeQueue.get(1);
@@ -148,33 +150,5 @@ public class Lobby {
             return true;
         }
         return false;
-    }
-
-    public void createGame() {
-        System.out.println("GAME BOUT TO START");
-        Player player_1 = this.gameModeQueue.get(0);
-        Player player_2 = this.gameModeQueue.get(1);
-        Game game = new Game(UUIDGenerator.generateUUID(), this.getLobbyUUID());
-        this.addGame(game);
-        game.addPlayer(player_1);
-        game.addPlayer(player_2);
-
-        // REMOVE PLAYERS FROM GAMEMODE SO NEW CAN BE CREATED
-        this.gameModeQueue.remove(player_1);
-        this.gameModeQueue.remove(player_2);
-
-        // setting colors
-        List<Player> gamePlayerList = game.getPlayerList();
-        PlayerColors.Color[] allColors = PlayerColors.getAllColors();
-        List<PlayerColors.Color> colorList = Arrays.asList(allColors);
-        Collections.shuffle(colorList);
-        PlayerColors.Color[] shuffledColors = colorList.toArray(new PlayerColors.Color[0]);
-
-        for (int i = 0; i < gamePlayerList.size(); i++) {
-            Player player = gamePlayerList.get(i);
-            PlayerColors.Color color = shuffledColors[i];
-            player.setPlayerColor(color);
-            // System.out.println(player.getNick() + "=" + color);
-        }
     }
 }
