@@ -129,21 +129,18 @@ public class App extends WebSocketServer {
                 broadcast("else?");
             }
 
-            String queue = lobby.returnGameModeQueue() + "";
-            if (queue.equals("2")) { broadcast("GAME STARTING!"); lobby.createGame(); Game game = lobby.getGameByPlayer(modeArray[0]); broadcast("Game:" + "duos" + "," + game.getGameUUID() + "," + lobby.getLobbyUUID() + "," + game.getPlayerList().get(0).getUUID() + "," + game.getPlayerList().get(1).getUUID());  }     
-
+            String queue = lobby.returnGameModeQueue() + "";    
             // probably gonna have to make a queue system
-            // if (lobby.checkGameModeFull()) {
-            //     broadcast("nothing worked at all");
-            //     System.out.println("game will start very soon...");
-            //     Game game = lobby.getGameByPlayer(modeArray[0]);
-            //     game.setGameState(GameState.PREPARE);
-            //     broadcast("Game:" + "duos" + "," + game.getGameUUID() + "," + lobby.getLobbyUUID() + ","
-            //             + game.getPlayerList().get(0).getUUID() + "," + game.getPlayerList().get(1).getUUID());     
-            // } else {
-            //     System.out.println("game not starting");
-            //     broadcast("HMMMMMM");
-            // }
+            if (queue.equals("2")) {
+                System.out.println("game will start very soon...");
+                Game game = lobby.getGameByPlayer(modeArray[0]);
+                game.setGameState(GameState.PREPARE);
+                broadcast("Game:" + "duos" + "," + game.getGameUUID() + "," + lobby.getLobbyUUID() + ","
+                        + game.getPlayerList().get(0).getUUID() + "," + game.getPlayerList().get(1).getUUID());     
+            } else {
+                System.out.println("game not starting");
+                broadcast("HMMMMMM");
+            }
         }
 
         // start game handling
