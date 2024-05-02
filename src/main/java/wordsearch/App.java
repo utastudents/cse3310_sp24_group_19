@@ -45,7 +45,7 @@ public class App extends WebSocketServer {
 
         String version;
         version = System.getenv("VERSION") != null ? System.getenv("VERSION") : "local build";
-        broadcast("Version:" + version);
+        broadcast("ENV:" + version);
 
         String uuid = UUIDGenerator.generateUUID();
         Player player = new Player(uuid, conn);
