@@ -45,12 +45,12 @@ public class App extends WebSocketServer {
 
         String version;
         version = System.getenv("VERSION") != null ? System.getenv("VERSION") : "local build";
-        broadcast("ENV:" + version);
 
         String uuid = UUIDGenerator.generateUUID();
         Player player = new Player(uuid, conn);
         gameServer.addPlayer(player);
         broadcast(uuid);
+        broadcast("ENV:" + version);
 
         // WordBank wordBank = new WordBank();
         // List<String> wordBankList = wordBank.getWordBank();
